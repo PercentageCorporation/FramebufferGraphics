@@ -7,4 +7,13 @@ This has been tested on a Raspberry Pi 3B+ with an attached HDMI touchscreen run
 2023-12-11-raspios-bookworm-arm64-lite.img
 ~~~
 
+- line
+- circle (filled or unfilled)
+- rectangle (filled or unfilled)
+- rounded_rectangle (filled or unfilled)
 
+A test routine is included that can be compiled an run using the following commands:
+```
+gcc fbtest.cpp -o fbtest -lstdc++
+./fbtest
+```
