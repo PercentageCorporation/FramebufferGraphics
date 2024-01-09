@@ -17,4 +17,9 @@ A test routine is included that can be compiled an run using the following comma
 gcc fbtest.cpp -o fbtest -lstdc++
 ./fbtest
 ```
-The line and circle drawing routines were implemented using Bresenham's line and circle algorithms. The fill routines were implemented by simply drawing lines between raster endpoints.
+The line and circle drawing routines were implemented using Bresenham's line and circle algorithms. The fill routines were implemented by simply drawing lines between raster endpoints.  
+
+Support for FSB fonts (PC Screen Fonts) has been added.
+- font_place_char
+- font_place_text
+
