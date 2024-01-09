@@ -10,20 +10,17 @@
 
 // gcc fbtest8.c -o fbtest8 -lstdc++ -lm
 
-// screen info
-char *fbp = 0;
-long int screensize = 0;
-struct fb_var_screeninfo vinfo;
-struct fb_fix_screeninfo finfo;
-
 unsigned int RED = 0b1111100000000000;
 unsigned int GREEN = 0b0000011111100000;
 unsigned int BLUE = 0b0000000000011111;
+unsigned int WHITE = 0b1111111111111111;
+
+char* fbpointer;
 
 void clear_screen()
 {
-	if (fbp == 0 || screensize == 0) return;
-	memset(fbp, 0, screensize);
+	if (fbpointer == 0 || screensize == 0) return;
+	memset(fbpointer, 0, screensize);
 }
 
 void put_pixel(int x, int y, unsigned int c)
@@ -31,7 +28,7 @@ void put_pixel(int x, int y, unsigned int c)
 	//printf("Pix %d %d %d\r\n", x, y, pix_offset);
     // calculate the pixel's byte offset inside the buffer
     unsigned int pix_offset = (x * 2) + (y * finfo.line_length);
-    *((unsigned short*)(fbp + pix_offset)) = c;
+    *((unsigned short*)(fbpointer + pix_offset)) = c;
 }
 
 // Bresenham's algorithm 
@@ -229,5 +226,43 @@ void circle(int xc, int yc, int r, unsigned int color, bool filled)
 		//usleep(100000);
     } 
 } 
+
+void font_place_char(int x, int y, int font_width, int font_height, char ch)
+{
+	unsigned char bits;
+	int bytes_per_row = font_width / 8;
+	int yy = y;
+
+	char* fontptr = get_font_ptr(ch);
+	for( int i = 0; i < font_height; ++i)
+	{	
+		int xx1 = x;
+		for(int b = 0; b < bytes_per_row; ++b)
+		{
+			bits = *(unsigned char*)fontptr++;
+			//printf("%02X ", bits);
+			for(int j = 0; j < 8; ++j)
+			{
+				if ((bits & 0x80) != 0)
+				{
+					put_pixel(xx1, yy, WHITE);
+				}
+				bits = bits << 1;
+				++xx1;
+			}
+		}
+		//printf("\r\n");
+		++yy;
+	}
+}
+
+void font_place_text(int x, int y, int font_width, int font_height, const char* text)
+{
+	while(char ch = *text++)
+	{
+		font_place_char(x, y, font_width, font_height, ch);
+		x += font_width;
+	}
+}	
   
 
