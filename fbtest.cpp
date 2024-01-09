@@ -9,7 +9,7 @@
 
 int main()
 {
-	int result = load_font("TB32.psf");
+	int result = load_font("TB14.psf");
 	if (result < 0) exit(1);
 
 	if (open_framebuffer("/dev/fb0") == -1)
@@ -29,6 +29,7 @@ int main()
 	circle(375, 300, 100, GREEN, true);
 	// text in rectangle
 	font_place_text(510, 315, "Text in Box");
+	//font_place_char(510, 315, 'A');
 	
 	sleep(5);
 	

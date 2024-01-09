@@ -26,9 +26,11 @@ typedef struct {
     uint32_t width;         /* width in pixels */
 } PSF_font;
 
-PSF_font*	PSFfont;
+PSF_font*	PSFfont = NULL;
+PSF1_Header* PSF1font = NULL;
 FILE* fp;
 char* fontbuf;
+bool	PSF2 = false;
 
 int load_font(const char* filename)
 {
@@ -63,18 +65,27 @@ int size;
     }
 	
 	if (*(unsigned long *)fontbuf == V2)
+	{
+		PSF2 = true;
+		PSFfont = (PSF_font *)fontbuf;
 		printf("Version 2\r\n");
+	}
 	else if (*(unsigned short *)fontbuf == V1)
-		printf("Version 2\r\n");
+	{
+		PSF1font = (PSF1_Header*)fontbuf;
+		printf("Version 1\r\n");
+	}
 	else
 	{
 		printf("Unknown version\r\n");
 		exit(3);
 	}
 	
-	PSFfont = (PSF_font *)fontbuf;
 	
-	printf("%d, %d, %d, %d, %d\r\n", PSFfont->headersize, PSFfont->numglyph, PSFfont->bytesperglyph, PSFfont->height, PSFfont->width);
+	if (PSF2)
+		printf("Hdr: %d, Glyph: %d, BPG: %d, Height: %d, Width: %d\r\n", PSFfont->headersize, PSFfont->numglyph, PSFfont->bytesperglyph, PSFfont->height, PSFfont->width);
+	else
+		printf("ChSize: %d\r\n", PSF1font->characterSize);
 
 	return 0;
 }
@@ -86,7 +97,11 @@ void close_font()
 
 char* get_font_ptr(int charId)
 {
-	int offset = PSFfont->headersize + (PSFfont->bytesperglyph * charId) + 12;
-	//printf("Offset: %d : %X\r\n", charId, offset);
+	int offset;
+	if (PSF2)
+		offset = PSFfont->headersize + (PSFfont->bytesperglyph * charId);
+	else
+		offset = 4 + (PSF1font->characterSize * charId);
+	printf("Offset: %d : %X\r\n", charId, offset);
 	return (char*)&fontbuf[offset];
 }
