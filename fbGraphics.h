@@ -227,10 +227,12 @@ void circle(int xc, int yc, int r, unsigned int color, bool filled)
     } 
 } 
 
-void font_place_char(int x, int y, int font_width, int font_height, char ch)
+void font_place_char(int x, int y, char ch)
 {
-	unsigned char bits;
+	int font_width = PSFfont->width;
+	int font_height = PSFfont->height;
 	int bytes_per_row = font_width / 8;
+	unsigned char bits;
 	int yy = y;
 
 	char* fontptr = get_font_ptr(ch);
@@ -256,12 +258,12 @@ void font_place_char(int x, int y, int font_width, int font_height, char ch)
 	}
 }
 
-void font_place_text(int x, int y, int font_width, int font_height, const char* text)
+void font_place_text(int x, int y, const char* text)
 {
 	while(char ch = *text++)
 	{
-		font_place_char(x, y, font_width, font_height, ch);
-		x += font_width;
+		font_place_char(x, y, ch);
+		x += PSFfont->width;
 	}
 }	
   

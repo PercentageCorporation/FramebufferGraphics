@@ -28,7 +28,7 @@ int main()
 	// filled circle
 	circle(375, 300, 100, GREEN, true);
 	// text in rectangle
-	font_place_text(510, 315, 16, 32, "Text in Box");
+	font_place_text(510, 315, "Text in Box");
 	
 	sleep(5);
 	
